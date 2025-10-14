@@ -7,37 +7,42 @@ st.write(
 )
 
 username = st.text_input("User name")
+password = st.text_input("Password")
 
-try:
-    # Connect to your PostgreSQL database
-    conn = psycopg2.connect(
-        host="localhost",        # or your server IP/hostname
-        database="definian_data", # your database name
-        user=username,    # your username
-        password="your_password", # your password
-        port="5432"              # default PostgreSQL port
-    )
+st.button("Connect", on_click=lambda: connect_to_db(username, password))
+
+def connect_to_db(user, pwd):
     
-    # Create a cursor object
-    cursor = conn.cursor()
+    try:
+        # Connect to your PostgreSQL database
+        conn = psycopg2.connect(
+            host="localhost",        # or your server IP/hostname
+            database="definian_data", # your database name
+            user=username,    # your username
+            password=password, # your password
+            port="5432"              # default PostgreSQL port
+        )
     
-    # Execute a simple query
-    cursor.execute("SELECT version();")
+        # Create a cursor object
+        cursor = conn.cursor()
     
-    # Fetch and print the result
-    db_version = cursor.fetchone()
-    print("✓ Connection successful!")
-    print(f"PostgreSQL version: {db_version[0]}")
+        # Execute a simple query
+        cursor.execute("SELECT version();")
     
-    # Close cursor and connection
-    cursor.close()
-    conn.close()
-    print("✓ Connection closed successfully")
+        # Fetch and print the result
+        db_version = cursor.fetchone()
+        print("✓ Connection successful!")
+        print(f"PostgreSQL version: {db_version[0]}")
     
-except psycopg2.OperationalError as e:
-    print("✗ Connection failed!")
-    print(f"Error: {e}")
+        # Close cursor and connection
+        cursor.close()
+        conn.close()
+        print("✓ Connection closed successfully")
     
-except Exception as e:
-    print("✗ An error occurred!")
-    print(f"Error: {e}")
+    except psycopg2.OperationalError as e:
+        print("✗ Connection failed!")
+        print(f"Error: {e}")
+    
+    except Exception as e:
+        print("✗ An error occurred!")
+        print(f"Error: {e}")
