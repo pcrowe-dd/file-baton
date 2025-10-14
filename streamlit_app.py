@@ -6,12 +6,14 @@ st.write(
     "Let's start building! For help and inspiration, head over to [docs.streamlit.io](https://docs.streamlit.io/)."
 )
 
+username = st.text_input("User name")
+
 try:
     # Connect to your PostgreSQL database
     conn = psycopg2.connect(
         host="localhost",        # or your server IP/hostname
-        database="your_db_name", # your database name
-        user="your_username",    # your username
+        database="definian_data", # your database name
+        user=username,    # your username
         password="your_password", # your password
         port="5432"              # default PostgreSQL port
     )
