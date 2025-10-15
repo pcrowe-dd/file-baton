@@ -43,56 +43,34 @@ def connect_to_db():
         st.session_state['connected'] = False
         st.session_state['error'] = str(e)
 
-
-col1, col2 = st.columns([1,6])
-connect_credentials = st.form('connect_credentials')
-connect_credentials.text_input("Database Host", key="host")
-connect_credentials.text_input("Database Username", key="user")
-connect_credentials.text_input("Database Password", key="pwd", type="password")
-submit = connect_credentials.form_submit_button("Submit", on_click=lambda: connect_to_db());
-#connect_credentials.hide()
-authentication_credentials = st.form('authentication_credentials')
-authentication_credentials.text_input("File Sharing Username", key="fs_user")
-authentication_credentials.text_input("File Sharing Password", key="fs_pwd", type="password")
-auth_submit = authentication_credentials.form_submit_button("Validate File Sharing Credentials", on_click=lambda: validate_user());
-#authentication_credentials.hide()
-forms = {'connection': connect_credentials, 'authentication': authentication_credentials}
+#forms = {'connection': connect_credentials, 'authentication': authentication_credentials}
 
 if 'connected' not in st.session_state:
+    connect_credentials = st.form('connect_credentials')
+    connect_credentials.text_input("Database Host", key="host")
+    connect_credentials.text_input("Database Username", key="user")
+    connect_credentials.text_input("Database Password", key="pwd", type="password")
+    connect_credentials.form_submit_button("Submit", on_click=lambda: connect_to_db(), key='submit');
+
     st.session_state['connected'] = False
     st.session_state['error'] = ''
     st.session_state['fs_authenticated'] = False
 
-if submit & (st.session_state['connected'] == True):
+if (st.session_state.get("submit") is not None) & (st.session_state['connected'] == True):
     st.write("Connection successful!")
-elif submit & (st.session_state['connected'] == False):
+    authentication_credentials = st.form('authentication_credentials')
+    authentication_credentials.text_input("File Sharing Username", key="fs_user")
+    authentication_credentials.text_input("File Sharing Password", key="fs_pwd", type="password")
+    authentication_credentials.form_submit_button("Validate File Sharing Credentials", on_click=lambda: validate_user(), key='auth_submit');
+
+elif (st.session_state.get("submit") is not None) & (st.session_state['connected'] == False):
     st.write("Connection failed. Please check your credentials and try again. Error: ", st.session_state['error'])
+    connect_credentials = st.form('connect_credentials')
+    connect_credentials.text_input("Database Host", key="host")
+    connect_credentials.text_input("Database Username", key="user")
+    connect_credentials.text_input("Database Password", key="pwd", type="password")
+    connect_credentials.form_submit_button("Submit", on_click=lambda: connect_to_db(), key='submit');
 
-#with col1:
-#    st.button("Connection", on_click=lambda: toggle_connection_form(forms))
-#with col2:
-#    st.button("User Authentication", on_click=lambda: toggle_authentication_form(forms))
 
-
-#if st.session_state['connected'] == False:
-#    st.write("Connection failed. Please check your credentials and try again. Error: ", st.session_state['error'])
-#    host = st.text_input("Host")
-#    username = st.text_input("Username")
-#    password = st.text_input("Password")
-
-#    st.button("Connect", on_click=lambda: )
-
-#def toggle_connection_form(forms):
-#    if forms['connection'].form_state == 'visible':
-#        forms['connection'].hide()
-#    else:
-#        forms['connection'].show()
-#        forms['authentication'].hide()
-#def toggle_authentication_form(forms):
-#    if forms['authentication'].form_state == 'visible':
-#        forms['authentication'].hide()
-#    else:
-#        forms['authentication'].show()
-#        forms['connection'].hide()
 
 
